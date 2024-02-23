@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Quest</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('../static/DSC_0763.jpg');
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+        }
+        h1, p, span {
+            color: #131212;
+            text-align: center;
+        }
+        p {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            margin: 0 auto;
+            display: block;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: center;
+        }
+        li {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #3620e1;
+            color: #ffffff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome</h1>
+    <p>Enter your quest below here to tell people what do you want them to do</p>
+    <p><input type="text" id="questInput" placeholder="Enter your quest here" onkeypress="handleKeyPress(event)"></p>
+    <ul id="displayQuests"></ul>
+
+    <script>
+        window.onload = function() {
+            var savedQuests = JSON.parse(localStorage.getItem('quests'));
+            if (savedQuests) {
+                savedQuests.forEach(function(quest) {
+                    addQuestToList(quest);
+                });
+            }
+        };
+        
+        function showQuest() {
+            var quest = document.getElementById("questInput").value;
+            addQuestToList(quest);
+            saveQuests();
+        }
+
+        function addQuestToList(quest) {
+            var ul = document.getElementById("displayQuests");
+            var li = document.createElement("li");
+            li.textContent = quest;
+            var completeButton = document.createElement("button");
+            completeButton.textContent = "Complete";
+            completeButton.onclick = function() {
+                completeQuest(ul, li);
+            };
+            li.appendChild(completeButton);
+            ul.appendChild(li);
+        }
+
+        function completeQuest(ul, li) {
+            ul.removeChild(li);
+            saveQuests();
+        }
+
+        function saveQuests() {
+            var quests = [];
+            var lis = document.querySelectorAll("#displayQuests li");
+            lis.forEach(function(li) {
+                quests.push(li.textContent);
+            });
+            localStorage.setItem('quests', JSON.stringify(quests));
+        }
+
+        function handleKeyPress(event) {
+            if (event.keyCode === 13) {
+                showQuest();
+            }
+        }
+    </script>
+</body>
+</html>
